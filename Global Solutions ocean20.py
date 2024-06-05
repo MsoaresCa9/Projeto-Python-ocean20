@@ -1,74 +1,87 @@
-#Função mensagem
-def manda_mensagem(mgs):
-    msg = print()
-    return
-def manda_mensagemerro(mgs_erro):
-    msg_erro= print()
-    return
-#lista de itens que são mais jogaods nos Oceanos
-itens = ['plasticos','vidro', 'metal','papel', 'tecido', 'oleo e derivados de petroleo','lixo organico','bituca de cigarro']
-#lista do Tempo de decomposição para cada item
-tempo = ['450 anos','400 anos', 'cerca de 50 a 200 anos', '2 a 5 meses','1 ano','40 anos','cerca de 2 a 6 meses','5 anos']
-#lista com quantidade de lixo estimada nos oceanos
-qtd_lixo = ['cerca de 86 a 150 milhões de toneladas','cerca de 34 a 65 milhões de toneladas', 'cerca de 23 a 36 milhões de toneladas','cerca de 4 a 14 toneladas','cerca de 2 a 5 milhoes de toneladas','cerca de 2 a 8 toneladas','cerca de 32 a 40 toneladas','cerca de 20 milhões unidades']
+import os
+import platform
+import pandas as pd
+import numpy as np
+import plotly.express as px
 
-#função que forca o usuario não utilizar números no nome
-def forca_opcao(msg,msg_erro):
-    nome = input(msg)
-    while nome.isnumeric():
-        print(msg_erro)
-        nome = input(msg)
-    return nome
-#pergunta ao usuario seu nome
-def pergunta_nome(msg,msg_erro):
-    nome = input(msg)
-    while not nome.isnumeric():
-        print(msg_erro)
-        nome = input(msg)
-    return nome
-nome_usuario = forca_opcao('Diga seu nome:','O nome não pode conter números')
-
-
-#informa ao usuario os itens na lista 'itens'
-for x in range(len(itens)):
-    print(itens[x],)
-#função que forca o usuario a escolher uma das opcoes cadastradas nas listas
-def meu_in(itens,buscar):
-    for i in range(len(itens)):
-        elem = itens[i]
-        if elem == buscar:
-            return True
-    return False
-def meu_index(lista,buscar):
-    for i in range(len(lista)):
-        elem = lista[i]
-        if elem == buscar:
-            return i
-    return False
-def forca_opcao(msg,itens,msg_erro):
-    opcao = input(msg)
-    while not meu_in(itens,opcao):
-        print(msg_erro)
-        opcao = input(msg)
-    return opcao
-opcao_desejada = forca_opcao("Diga uma opção: ",itens,"Diga uma opção válida!")
-
-#anexa o tempo de decomposição ao item
-local_opcao = meu_index(itens,opcao_desejada)
-resposta= print(f"O {itens[local_opcao]} demora cerca de {tempo[local_opcao]} para se decompor,e a quantidadse de lixo desse residuo no mar é cerca de {qtd_lixo[local_opcao]}")
-
-#pergunta ao usuario se ele quer saber sobre mais algum item
-prosseguir = forca_opcao(f"Voce deseja saber sobre mais algum item {nome_usuario.upper()}: (sim/não)\n->",['sim','não'],'Somente sim/não')
-
-# Verificando a resposta do usuário
-if prosseguir == 'sim':
-    while prosseguir == 'sim':
-        #Mensagens que aparecem para o usuario
-        opcao_desejada = forca_opcao("Diga uma opção: ",itens,"Diga uma opção válida!")
-        #anexa o tempo de decomposição ao item
-        local_opcao = meu_index(itens,opcao_desejada)
-        resposta= print(f"O {itens[local_opcao]} demora cerca de {tempo[local_opcao]} para se decompor,e a quantidadse de lixo desse residuo no mar é cerca de {qtd_lixo[local_opcao]}")
-        #pergunta ao usuario se ele quer saber sobre mais algum item
-        prosseguir = forca_opcao(f"Voce deseja saber sobre mais algum item {nome_usuario.upper()}: (sim ou não)\n->",['sim','não'],'Somente sim/não')
+# Função para limpar o painel
+def limpar_painel():
+    if platform.system() == "Windows":
+        os.system("cls")
     else:
-        print('Obrigado pelo acesso')
+        print("\033c", end="")
+
+# Função para criar um dataframe fictício com informações sobre a poluição nos mares
+def criar_dataframe():
+    data = {
+        'Latitude': np.random.uniform(-90, 90, 100),
+        'Longitude': np.random.uniform(-180, 180, 100),
+        'Poluição': np.random.uniform(0, 100, 100),
+        'Tipo de Poluição': np.random.choice(['Óleo', 'Plástico', 'Químicos'], 100)
+    }
+    df = pd.DataFrame(data)
+    return df
+
+# Função para criar um mapa interativo com informações sobre a poluição nos mares
+def criar_mapa_interativo(df):
+    fig = px.scatter_geo(df, lat='Latitude', lon='Longitude', color='Poluição',
+                         hover_name='Tipo de Poluição', color_continuous_scale='reds',
+                         title='Poluição nos Mares')
+    fig.update_layout(geo=dict(bgcolor='lightblue'))
+    return fig
+
+# Função para perguntar ao usuário qual opção ele deseja
+def perguntar_usuario():
+    opcoes = [
+        "1. Resíduos descartados nos oceanos pelo Brasil",
+        "2. Gerar mapa interativo",
+        "3. Nosso contato",
+        "4. O que a CodeTech busca"
+    ]
+    print("Selecione uma opção:")
+    for opcao in opcoes:
+        print(opcao)
+    while True:
+        escolha = input("Digite a opção desejada: ")
+        if escolha.isdigit() and 1 <= int(escolha) <= 4:
+            return int(escolha)
+        else:
+            print("Opção inválida. Tente novamente!")
+
+# Função para processar a escolha do usuário
+def processar_escolha(escolha, df):
+    if escolha == 1:
+        print("Resíduos descartados nos oceanos pelo Brasil: é um problema sério que afeta a saúde dos oceanos e da vida marinha, o Brasil hoje descarta cerca de \n"
+              "3,44 milhões de toneladas de plasticos nos mares, isso daria cerca de 344 mil caminhões de lixo lotados, \n"
+              "isso só exemplifica que o Brasil tem uma administração ruim com cerca de 1/3 do seu própio lixo.")
+    elif escolha == 2:
+        mapa_interativo = criar_mapa_interativo(df)
+        mapa_interativo.show()
+    elif escolha == 3:
+        print("Nosso contato:CodetechFiap@gmail.com")
+    elif escolha == 4:
+        print("A CodeTech busca desenvolver soluções inovadoras para problemas ambientais, trazendo com sigo ideias inovadoras \n"
+              "de seus idealizadores e sempre prezando por informações com mais fácil acesso.")
+
+# Função para perguntar se o usuário deseja mais informações
+def perguntar_mais_informacoes():
+    while True:
+        resposta = input("Deseja saber sobre mais alguma informação? (sim/não): ")
+        if resposta.lower() == 'sim':
+            return True
+        elif resposta.lower() == 'não':
+            print("Muito obrigado por utilizar o nosso programa!")
+            return False
+        else:
+            print("Opção inválida. Tente novamente!")
+
+# Programa principal
+while True:
+    limpar_painel()
+    escolha = perguntar_usuario()
+    df = criar_dataframe()
+    processar_escolha(escolha, df)
+    input("Pressione Enter para continuar...")
+    if not perguntar_mais_informacoes():
+        break
+
