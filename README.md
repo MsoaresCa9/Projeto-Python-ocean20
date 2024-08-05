@@ -47,8 +47,4 @@ pip install numpy pandas plotly
     
 
 
-## Autores
 
-- *Lucas Serrano* (RM555170)
-- *Caio Rossini* (RM555084)
-- *Pedro Nobre* (RM557454)
